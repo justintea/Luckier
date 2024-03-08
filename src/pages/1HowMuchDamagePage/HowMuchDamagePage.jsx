@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Button, Col, Row, Statistic } from 'antd';
-import { Checkbox, Form, Input, InputNumber,Slider, Space  } from 'antd';
+import { Form, InputNumber, Slider, Space  } from 'antd';
 
 
-const AttacksIntegerStep = ({ onChange, value }) => {
+const AttacksWoundsIntegerStep = ({ onChange, value }) => {
   const onSliderChange = (sliderValue) => {
     onChange(sliderValue);
   };
@@ -116,9 +116,9 @@ export default function HowMuchDamagePage() {
   const [numberOfAttacksValue, setNumberOfAttacksValue] = useState(1);
   const [hitRollValue, setHitRollValue] = useState(3);
   const [sTRatioValue, setSTRatioValue] = useState(3);
-  const [armorSaveValue, setArmorSaveValue] = useState(4);
+  const [armorSaveValue, setArmorSaveValue] = useState(5);
   const [weaponDamageValue, setWeaponDamageValue] = useState(3);
-  const [slider6Value, setSlider6Value] = useState(1);
+  // const [slider6Value, setSlider6Value] = useState(1);
 
   const [damageDealt, setDamageDealt] = useState(0.0);
 
@@ -137,23 +137,20 @@ export default function HowMuchDamagePage() {
     console.log('armor save prob', rollPlus(armorSaveValue));
 
 
-    let calculatedDamage = numberOfAttacksValue * rollPlus(hitRollValue) * rollPlus(sTRatioValue) * rollPlus(armorSaveValue) * weaponDamageValue;
+    let calculatedDamage = numberOfAttacksValue * rollPlus(hitRollValue) * rollPlus(sTRatioValue) * (1-rollPlus(armorSaveValue)) * weaponDamageValue;
     setDamageDealt(calculatedDamage.toFixed(2));
   };
+
+  //! part 2 of this code is: to select 1 or multiple models, and wound characteristics. to see how many killed. 
+
 
   const onFinishFailed = (errorInfo) => {
     console.log('Failed:', errorInfo);
   };
 
-  // const [inputValue, setInputValue] = useState(10);
-  // const onChange = (newValue) => {
-  //   setInputValue(newValue);
-  // };
 
   return (<>
-  
-  {/* <h1> how much damage dealt</h1> */}
-    
+      
   <Row >
     <Col span={30} style={{ margin: '0 0 0 5%'}}>
         <Statistic title="Damage dealt" value={damageDealt} precision={2} suffix=" wounds" style={{ textAlign: 'center', margin: '0 0 0 40%'}} />
@@ -184,7 +181,7 @@ export default function HowMuchDamagePage() {
                 </Form.Item> */}
 
                 <Form.Item label='# attacks'> 
-                <AttacksIntegerStep  value={numberOfAttacksValue} onChange={(value) => setNumberOfAttacksValue(value)} />
+                <AttacksWoundsIntegerStep  value={numberOfAttacksValue} onChange={(value) => setNumberOfAttacksValue(value)} />
                 </Form.Item>
 
                 <Form.Item label='Hit roll'> 
@@ -208,7 +205,7 @@ export default function HowMuchDamagePage() {
                 </Form.Item> */}
 
                 <Form.Item> 
-                    <Button style={{ margin: '0 0 0 60%' }} type="primary" htmlType="submit"> Calculate </Button>
+                    <Button style={{ margin: '0 0 0 75%' }} type="primary" htmlType="submit"> Calculate </Button>
                     {/* <Button style={{ marginTop: 16, }} type="primary" htmlType="submit"> Calculate </Button> */}
 
             </Form.Item>
@@ -221,35 +218,3 @@ export default function HowMuchDamagePage() {
     
   </>);
 }
-
-//? save pt
-// import React from 'react';
-// import { Button, Col, Row, Statistic } from 'antd';
-
-// export default function HowMuchDamagePage() {
-
-//   const damageDealt = 15.00;
-
-
-//   return (<>
-  
-//   {/* <h1> how much damage dealt</h1> */}
-    
-//   <Row gutter={16}>
-  
-//     <Col span={25}>
-//       <Statistic title="Damage dealt" value={damageDealt} precision={2} suffix=" wounds" />
-//       <Button
-//         style={{
-//           marginTop: 16,
-//         }}
-//         type="primary"
-//       >
-//         Calculate
-//       </Button>
-//     </Col>
-  
-//   </Row>
-   
-//   </>);
-// }
