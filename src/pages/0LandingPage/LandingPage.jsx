@@ -27,15 +27,34 @@ export default function LandingPage() {
       <Tabs
         activeKey={activeTab}
         onTabClick={(key) => handleTabClick(key)}
-        items={[FireFilled, AimOutlined].map((Icon, i) => {
-          const id = String(i + 1);
-          return {
-            key: id,
-            label: `Tab ${id}`,
-            // children: `Tab ${id}`,
-            icon: <Icon />,
-          };
-        })}
+        style={{ width: '150%', }}
+        // tabBarGutter={30} 
+        centered={true}
+
+        items={[
+          {
+            key: "1",
+            label: "Damage", // Custom label for Tab 1
+            icon: <FireFilled />,
+          },
+          {
+            key: "2",
+            label: "# Attacks", // Custom label for Tab 2
+            icon: <AimOutlined />,
+          },
+        ]}
+
+        // items={[FireFilled, AimOutlined].map((Icon, i) => {
+        //   const id = String(i + 1);
+        //   return {
+        //     key: id,
+        //     label: `Tab ${id}`,
+        //     // children: `Tab ${id}`,
+        //     icon: <Icon />,
+        //     // style: { width: '150px' }, // Adjust the width as needed
+
+        //   };
+        // })}
       />
       {renderTabContent()}
     </>
