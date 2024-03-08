@@ -203,7 +203,7 @@ export default function AttacksRequiredPage() {
                 </Form.Item>
 
                 <Form.Item> 
-                    <Button style={{ margin: '0 0 0 50%' }} type="primary" htmlType="submit"> Calculate </Button>
+                    <Button style={{ margin: '0 0 0 45%' }} type="primary" htmlType="submit"> Calculate </Button>
                </Form.Item>
             
           
