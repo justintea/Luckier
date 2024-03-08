@@ -2,7 +2,7 @@ import { FireFilled, AimOutlined } from "@ant-design/icons";
 import { Tabs } from "antd";
 import React, { useState } from "react";
 import HowMuchDamagePage from "../1HowMuchDamagePage/HowMuchDamagePage";
-import HitsRequiredPage from "../2HitsRequiredPage/HitsRequiredPage";
+import AttacksRequiredPage from "../2AttacksRequiredPage/AttacksRequiredPage";
 
 export default function LandingPage() {
   const [activeTab, setActiveTab] = useState("2");
@@ -16,7 +16,7 @@ export default function LandingPage() {
       case "1":
         return <HowMuchDamagePage />;
       case "2":
-        return <HitsRequiredPage />;
+        return <AttacksRequiredPage />;
       default:
         return null;
     }
@@ -32,7 +32,7 @@ export default function LandingPage() {
           return {
             key: id,
             label: `Tab ${id}`,
-            children: `Tab ${id}`,
+            // children: `Tab ${id}`,
             icon: <Icon />,
           };
         })}

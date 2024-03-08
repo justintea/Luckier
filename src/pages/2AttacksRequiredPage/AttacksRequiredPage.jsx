@@ -1,9 +1,9 @@
 import React from 'react';
 import { Button, Col, Row, Statistic } from 'antd';
 
-export default function HowMuchDamagePage() {
+export default function AttacksRequiredPage() {
 
-  const damageDealt = 15.00;
+  const hitsRequired = 15.00;
 
 
   return (<>
@@ -13,7 +13,7 @@ export default function HowMuchDamagePage() {
   <Row gutter={16}>
   
     <Col span={25}>
-      <Statistic title="Damage dealt" value={damageDealt} precision={2} suffix=" wounds" />
+      <Statistic title="Attacks required" value={hitsRequired} precision={2} suffix=" attacks" />
       <Button
         style={{
           marginTop: 16,
@@ -23,14 +23,7 @@ export default function HowMuchDamagePage() {
         Calculate
       </Button>
     </Col>
-  
   </Row>
 
-
-
-
-
-
-    
   </>);
 }
