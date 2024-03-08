@@ -27,7 +27,7 @@ export default function LandingPage() {
       <Tabs
         activeKey={activeTab}
         onTabClick={(key) => handleTabClick(key)}
-        style={{ width: '180%', }}
+        style={{ width: '190%', }}
         // tabBarGutter={30} 
         centered={true}
 
