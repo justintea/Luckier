@@ -152,7 +152,7 @@ export default function HowMuchDamagePage() {
   return (<>
       
   <Row >
-    <Col span={30} style={{ margin: '0 0 0 48%'}}>
+    <Col span={30} style={{ margin: '0 0 0 46%'}}>
         <Statistic title="Damage dealt" value={damageDealt} precision={2} suffix=" wounds" style={{ textAlign: 'center', margin: '0% 0 10% 25%', width: '100%' }} />
                 <Form
                 name="basic"
@@ -205,7 +205,7 @@ export default function HowMuchDamagePage() {
                 </Form.Item> */}
 
                 <Form.Item> 
-                    <Button style={{ margin: '0 0 0 60%' }} type="primary" htmlType="submit"> Calculate </Button>
+                    <Button style={{ margin: '0 0 0 50%' }} type="primary" htmlType="submit"> Calculate </Button>
                 </Form.Item>
                   
                 </Space>
