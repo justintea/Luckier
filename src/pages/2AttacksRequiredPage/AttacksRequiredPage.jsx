@@ -159,8 +159,8 @@ export default function AttacksRequiredPage() {
     
   <Row >
     <Col span={30} style={{ margin: '0 0 0 5%'}}>
-        <Statistic title="Attacks required" value={attacksRequiredValue} precision={0} suffix=" attacks" style={{ textAlign: 'center', margin: '0 0 0 40%'}} />
-        <p  style={{ textAlign: 'center', fontSize: 'smaller', margin: '0 0 0 40%' }}>
+        <Statistic title="Attacks required" value={attacksRequiredValue} precision={0} suffix=" attacks" style={{ textAlign: 'center', margin: '0 0 0% 40%'}} />
+        <p  style={{ textAlign: 'center', fontSize: 'smaller', margin: '0 0 10% 40%' }}>
         {modelsRequiredValue} models required
         </p>        
                 <Form

@@ -153,7 +153,7 @@ export default function HowMuchDamagePage() {
       
   <Row >
     <Col span={30} style={{ margin: '0 0 0 5%'}}>
-        <Statistic title="Damage dealt" value={damageDealt} precision={2} suffix=" wounds" style={{ textAlign: 'center', margin: '0 0 0 40%'}} />
+        <Statistic title="Damage dealt" value={damageDealt} precision={2} suffix=" wounds" style={{ textAlign: 'center', margin: '0% 0 10% 25%', width: '100%' }} />
                 <Form
                 name="basic"
                 labelCol={{ span: 8, }}
@@ -166,7 +166,7 @@ export default function HowMuchDamagePage() {
                 autoComplete="off"
                 >
                 
-                <Space style={{ width: '100%', }} direction="vertical"  >
+                <Space style={{ width: '100%' }} direction="vertical"  >
                 {/* <Form.Item
                   label="Username"
                   name="username"
@@ -206,11 +206,8 @@ export default function HowMuchDamagePage() {
 
                 <Form.Item> 
                     <Button style={{ margin: '0 0 0 75%' }} type="primary" htmlType="submit"> Calculate </Button>
-                    {/* <Button style={{ marginTop: 16, }} type="primary" htmlType="submit"> Calculate </Button> */}
-
-            </Form.Item>
-            
-          
+                </Form.Item>
+                  
                 </Space>
           </Form>
     </Col>
