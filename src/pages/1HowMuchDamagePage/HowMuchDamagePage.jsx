@@ -153,7 +153,7 @@ export default function HowMuchDamagePage() {
       
   <Row >
     <Col span={30} style={{ margin: '0 0 0 46%'}}>
-        <Statistic title="Damage dealt" value={damageDealt} precision={2} suffix=" wounds" style={{ textAlign: 'center', margin: '0% 0 10% 25%', width: '100%' }} />
+        <Statistic title="Damage dealt" value={damageDealt} precision={2} suffix=" wounds" style={{ textAlign: 'center', margin: '0% 0 10% 25%', width: '115%' }} />
                 <Form
                 name="basic"
                 labelCol={{ span: 8, }}
