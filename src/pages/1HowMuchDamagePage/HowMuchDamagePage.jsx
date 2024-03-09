@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Form, InputNumber, Slider, Space, Checkbox, Button, Col, Row, Statistic } from 'antd';
+import { Form, InputNumber, Slider, Space, Checkbox, Button, Col, Row, Statistic, Select } from 'antd';
 
-
+//! 1. component functions 
 const AttacksWoundsIntegerStep = ({ onChange, value }) => {
   const onSliderChange = (sliderValue) => {
     onChange(sliderValue);
@@ -101,6 +101,31 @@ return (
 );
 }
 
+//? FNP select dropdown
+// const onChange = (value) => {
+//   console.log(`selected ${value}`);
+// };
+
+const onSearch = (value) => {
+  console.log('search:', value);
+};
+
+// Update the onChange handler for the FNP Select
+const onFNPChange = (value) => {
+  console.log(`Selected FNP: ${value}`);
+  setFNP(value);
+};
+
+
+// Filter `option.label` match the user type `input`
+const filterOption = (input, option) =>
+  (option?.label ?? '').toLowerCase().includes(input.toLowerCase());
+
+
+
+
+//! 2. game probability functions 
+
 function rollPlus(diceRollRequired) {
   if (diceRollRequired === 1) { return (6 / 6); } else
     if (diceRollRequired === 2) { return (5 / 6); } else
@@ -117,12 +142,12 @@ function oneSideProbability() {
 //   console.log(`checked = ${e.target.checked}`);
 // };
 
-
-function damageCalculatorEngine(numberOfAttacksValue, hitRollValue, sTRatioValue, armorSaveValue, weaponDamageValue, lethalHits, sustainedHits, devWounds, fNP, hitReroll, woundReroll, saveReroll, fateDice) {
+function damageCalculatorEngine(numberOfAttacksValue, hitRollValue, sTRatioValue, armorSaveValue, weaponDamageValue, lethalHits, sustainedHits, devWounds, hitReroll, woundReroll, saveReroll, fateDice) {
+// function damageCalculatorEngine(numberOfAttacksValue, hitRollValue, sTRatioValue, armorSaveValue, weaponDamageValue, lethalHits, sustainedHits, devWounds, fNP, hitReroll, woundReroll, saveReroll, fateDice) {
   let calculatedDamage = 0.00; // Update this part with the correct formula for Lethal Hits
 
+  // console.log(`statuses of lethalHits: ${lethalHits}, sustainedHits: ${sustainedHits}, devWounds: ${devWounds}, hitReroll: ${hitReroll}, woundReroll: ${woundReroll}, saveReroll: ${saveReroll}, fateDice: ${fateDice} `);
   console.log(`statuses of lethalHits: ${lethalHits}, sustainedHits: ${sustainedHits}, devWounds: ${devWounds}, fNP: ${fNP}, hitReroll: ${hitReroll}, woundReroll: ${woundReroll}, saveReroll: ${saveReroll}, fateDice: ${fateDice} `);
-  console.log('print mix condition', (lethalHits & sustainedHits) );
 
   //? implement these (lethalHits & sustainedHits & devWounds) first.
   //? doing 8 options this will result iin 256 permutations. you need a different way to scale. 
@@ -186,8 +211,7 @@ function damageCalculatorEngine(numberOfAttacksValue, hitRollValue, sTRatioValue
 
 
 
-
-
+//! 3. Page render functions 
 export default function HowMuchDamagePage() {
 
   const [numberOfAttacksValue, setNumberOfAttacksValue] = useState(1);
@@ -202,7 +226,9 @@ export default function HowMuchDamagePage() {
   const [sustainedHits, setSustainedHits] = useState(false);
   const [lethalHits, setLethalHits] = useState(false);
   const [devWounds, setDevWounds] = useState(false);
-  const [fNP, setFNP] = useState(false);
+  const [fNP, setFNP] = useState(null);
+  // const [fNP, setFNP] = useState(false);
+
   const [hitReroll, setHitReroll] = useState(false);
   const [woundReroll, setWoundReroll] = useState(false);
   const [saveReroll, setSaveReroll] = useState(false);
@@ -218,6 +244,7 @@ export default function HowMuchDamagePage() {
     console.log('sTRatioValue', sTRatioValue);
     console.log('armorSaveValue', armorSaveValue);
     console.log('weaponDamageValue', weaponDamageValue);
+    console.log('fNP', fNP);
 
     console.log('hit roll prob', rollPlus(hitRollValue));
     console.log('ST prob', rollPlus(sTRatioValue));
@@ -271,11 +298,12 @@ export default function HowMuchDamagePage() {
                 <Checkbox name="Sustained Hits" checked={sustainedHits} onChange={() => setSustainedHits(!sustainedHits)} style={{ width: '150%' }}   >Sustained Hits</Checkbox>
                 <Checkbox name="Lethal Hits" checked={lethalHits} onChange={() => setLethalHits(!lethalHits)} style={{ width: '150%' }}   >Lethal Hits</Checkbox>
                 <Checkbox name="Devastating Wounds" checked={devWounds} onChange={() => setDevWounds(!devWounds)} style={{ width: '150%' }}   >Devastating Wounds</Checkbox>
-                <Checkbox defaultChecked={false} disabled     name="FNP" checked={fNP} onChange={() => setFNP(!fNP)} style={{ width: '150%' }}   >FNP</Checkbox>
+                {/* <Checkbox defaultChecked={false} disabled     name="FNP" checked={fNP} onChange={() => setFNP(!fNP)} style={{ width: '150%' }}   >FNP</Checkbox> */}
                 <Checkbox defaultChecked={false} disabled     name="hitReroll" checked={hitReroll} onChange={() => setHitReroll(!hitReroll)} style={{ width: '150%' }}   >Hit reroll</Checkbox>
                 <Checkbox defaultChecked={false} disabled     name="woundReroll" checked={woundReroll} onChange={() => setWoundReroll(!woundReroll)} style={{ width: '150%' }}   >Wound reroll</Checkbox>
                 <Checkbox defaultChecked={false} disabled     name="saveReroll" checked={saveReroll} onChange={() => setSaveReroll(!saveReroll)} style={{ width: '150%' }}   >Save reroll</Checkbox>
                 <Checkbox defaultChecked={false} disabled     name="fateDice" checked={fateDice} onChange={() => setFateDice(!fateDice)} style={{ width: '150%' }}   >Use fate dice</Checkbox>
+                
 
                 <Form.Item label='# attacks'> 
                 <AttacksWoundsIntegerStep  value={numberOfAttacksValue} onChange={(value) => setNumberOfAttacksValue(value)} />
@@ -297,6 +325,49 @@ export default function HowMuchDamagePage() {
                     <DamageIntegerStep value={weaponDamageValue} onChange={(value) => setWeaponDamageValue(value)} />
                 </Form.Item>
             
+
+                {/* //? FNP select dropdown */}
+{/* 
+const onFNPChange = (value) => {
+  console.log(`Selected FNP: ${value}`);
+  setFNP(value);
+}; */}
+
+
+                <Form.Item label='FNP'> 
+                <Select
+                showSearch
+                placeholder=""
+                optionFilterProp="children"
+                // onChange={() => setFNP(fNP)}
+                onChange={onFNPChange} // Use the new onChange handler
+
+                // onFNPChange={(value) => setFNP(value)}
+
+                onSearch={onSearch}
+
+                filterOption={filterOption}
+                options={[
+                  {
+                    value: 0,
+                    label: 'No FNP',
+                  },
+                  {
+                    value: 4,
+                    label: '4+',
+                  },
+                  {
+                    value: 5,
+                    label: '5+',
+                  },
+                  {
+                    value: 6,
+                    label: '6+',
+                  },
+                ]}
+                />    
+                </Form.Item>
+
                 {/* <Form.Item label='Wounds'> 
                     <IntegerStep value={slider2Value} onChange={(value) => setSlider2Value(value)} />
                 </Form.Item> */}
