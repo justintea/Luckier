@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Col, Row, Statistic } from 'antd';
-import { Form, InputNumber, Slider, Space  } from 'antd';
+import { Form, InputNumber, Slider, Space, Checkbox, Button, Col, Row, Statistic } from 'antd';
 
 
 const AttacksWoundsIntegerStep = ({ onChange, value }) => {
@@ -111,6 +110,44 @@ function rollPlus(diceRollRequired) {
             if (diceRollRequired === 6) { return (1/ 6); } 
 }
 
+// const onChange = (e) => {
+//   console.log(`checked = ${e.target.checked}`);
+// };
+
+
+function damageCalculatorEngine(lethalHits, sustainedHits, devWounds, numberOfAttacksValue, hitRollValue, sTRatioValue, armorSaveValue, weaponDamageValue) {
+  let calculatedDamage = 0.00; // Update this part with the correct formula for Lethal Hits
+
+  console.log(`statuses of lethalHits: ${lethalHits}, sustainedHits: ${sustainedHits}, devWounds: ${devWounds}`);
+  console.log('print mix condition', (lethalHits & sustainedHits) );
+
+  if (lethalHits & sustainedHits) {
+    calculatedDamage = 50;
+  } else
+      if (lethalHits & devWounds) {
+      calculatedDamage = 60;
+      } else
+          if (sustainedHits & devWounds) {
+          calculatedDamage = 70;
+          } else
+              if (lethalHits) {
+              calculatedDamage = 20;
+              } else
+                  if (sustainedHits) {
+                    calculatedDamage = numberOfAttacksValue*(1+1/6) * rollPlus(hitRollValue) * rollPlus(sTRatioValue) * (1 - rollPlus(armorSaveValue)) * weaponDamageValue;
+                  } else
+                      if (devWounds) {
+                      calculatedDamage = 40;
+                      } else {
+                        calculatedDamage = numberOfAttacksValue * rollPlus(hitRollValue) * rollPlus(sTRatioValue) * (1 - rollPlus(armorSaveValue)) * weaponDamageValue;
+                      }
+                    return calculatedDamage;
+  }
+
+
+
+
+
 export default function HowMuchDamagePage() {
 
   const [numberOfAttacksValue, setNumberOfAttacksValue] = useState(1);
@@ -121,6 +158,11 @@ export default function HowMuchDamagePage() {
   // const [slider6Value, setSlider6Value] = useState(1);
 
   const [damageDealt, setDamageDealt] = useState(0.0);
+
+  const [sustainedHits, setSustainedHits] = useState(false);
+  const [lethalHits, setLethalHits] = useState(false);
+  const [devWounds, setDevWounds] = useState(false);
+
 
   const onFinish = (values) => {
     console.log('Success:', values);
@@ -136,9 +178,10 @@ export default function HowMuchDamagePage() {
     console.log('ST prob', rollPlus(sTRatioValue));
     console.log('armor save prob', rollPlus(armorSaveValue));
 
-
-    let calculatedDamage = numberOfAttacksValue * rollPlus(hitRollValue) * rollPlus(sTRatioValue) * (1-rollPlus(armorSaveValue)) * weaponDamageValue;
+    
+    let calculatedDamage = damageCalculatorEngine(lethalHits, sustainedHits, devWounds, numberOfAttacksValue, hitRollValue, sTRatioValue, armorSaveValue, weaponDamageValue); 
     setDamageDealt(calculatedDamage.toFixed(2));
+
   };
 
   //! part 2 of this code is: to select 1 or multiple models, and wound characteristics. to see how many killed. 
@@ -180,6 +223,11 @@ export default function HowMuchDamagePage() {
                   <Input />
                 </Form.Item> */}
 
+          
+                <Checkbox name="Sustained Hits" checked={sustainedHits} onChange={() => setSustainedHits(!sustainedHits)}   >Sustained Hits</Checkbox>
+                <Checkbox name="Lethal Hits" checked={lethalHits} onChange={() => setLethalHits(!lethalHits)}    >Lethal Hits</Checkbox>
+                <Checkbox name="Devastating Wounds" checked={devWounds} onChange={() => setDevWounds(!devWounds)}   >Devastating Wounds</Checkbox>
+                
                 <Form.Item label='# attacks'> 
                 <AttacksWoundsIntegerStep  value={numberOfAttacksValue} onChange={(value) => setNumberOfAttacksValue(value)} />
                 </Form.Item>
