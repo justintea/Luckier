@@ -110,38 +110,78 @@ function rollPlus(diceRollRequired) {
             if (diceRollRequired === 6) { return (1/ 6); } 
 }
 
+function oneSideProbability() {
+  return (1 / 6); 
+}
 // const onChange = (e) => {
 //   console.log(`checked = ${e.target.checked}`);
 // };
 
 
-function damageCalculatorEngine(lethalHits, sustainedHits, devWounds, numberOfAttacksValue, hitRollValue, sTRatioValue, armorSaveValue, weaponDamageValue) {
+function damageCalculatorEngine(numberOfAttacksValue, hitRollValue, sTRatioValue, armorSaveValue, weaponDamageValue, lethalHits, sustainedHits, devWounds, fNP, hitReroll, woundReroll, saveReroll, fateDice) {
   let calculatedDamage = 0.00; // Update this part with the correct formula for Lethal Hits
 
-  console.log(`statuses of lethalHits: ${lethalHits}, sustainedHits: ${sustainedHits}, devWounds: ${devWounds}`);
+  console.log(`statuses of lethalHits: ${lethalHits}, sustainedHits: ${sustainedHits}, devWounds: ${devWounds}, fNP: ${fNP}, hitReroll: ${hitReroll}, woundReroll: ${woundReroll}, saveReroll: ${saveReroll}, fateDice: ${fateDice} `);
   console.log('print mix condition', (lethalHits & sustainedHits) );
 
-  if (lethalHits & sustainedHits) {
-    calculatedDamage = 50;
+  //? implement these (lethalHits & sustainedHits & devWounds) first.
+  //? doing 8 options this will result iin 256 permutations. you need a different way to scale. 
+
+  if (lethalHits & sustainedHits & devWounds) {
+    calculatedDamage = 9999;
   } else
-      if (lethalHits & devWounds) {
-      calculatedDamage = 60;
+      // 2 lethal hits & sustained hits 
+      if (lethalHits & sustainedHits) {
+        calculatedDamage =
+          // lethalhits
+          ((numberOfAttacksValue * oneSideProbability() * (1 - rollPlus(armorSaveValue)) * weaponDamageValue)
+            +
+          // remaining
+          (numberOfAttacksValue * (rollPlus(hitRollValue) - oneSideProbability()) * (rollPlus(sTRatioValue) - oneSideProbability()) * (1 - rollPlus(armorSaveValue)) * weaponDamageValue)
+          +
+          // and sustained hits 1
+          (numberOfAttacksValue * oneSideProbability() * rollPlus(sTRatioValue) * (1 - rollPlus(armorSaveValue)) * weaponDamageValue));
+        
       } else
-          if (sustainedHits & devWounds) {
-          calculatedDamage = 70;
+          // 2 lethal hits & devastating wounds
+          if (lethalHits & devWounds) {
+            calculatedDamage =
+              // lethalhits
+              ((numberOfAttacksValue * oneSideProbability() * (1 - rollPlus(armorSaveValue)) * weaponDamageValue)
+              +
+              // remaining, less devWound roll
+              (numberOfAttacksValue * (rollPlus(hitRollValue)-oneSideProbability()) * (rollPlus(sTRatioValue) - oneSideProbability()) * (1 - rollPlus(armorSaveValue)) * weaponDamageValue)
+              + 
+              // devWounds
+              (numberOfAttacksValue * rollPlus(hitRollValue) * oneSideProbability() * weaponDamageValue));
           } else
-              if (lethalHits) {
-              calculatedDamage = 20;
+              // 2 sustained hits & devWounds
+              if (sustainedHits & devWounds) {
+              calculatedDamage = 70;
               } else
-                  if (sustainedHits) {
-                    calculatedDamage = numberOfAttacksValue*(1+1/6) * rollPlus(hitRollValue) * rollPlus(sTRatioValue) * (1 - rollPlus(armorSaveValue)) * weaponDamageValue;
+                   // 1 lethal hits
+                  if (lethalHits) {
+                    calculatedDamage =
+                      ((numberOfAttacksValue * (rollPlus(hitRollValue)-oneSideProbability()) * rollPlus(sTRatioValue) * (1 - rollPlus(armorSaveValue)) * weaponDamageValue)
+                      +
+                      (numberOfAttacksValue * oneSideProbability() * (1 - rollPlus(armorSaveValue)) * weaponDamageValue));
                   } else
-                      if (devWounds) {
-                      calculatedDamage = 40;
-                      } else {
-                        calculatedDamage = numberOfAttacksValue * rollPlus(hitRollValue) * rollPlus(sTRatioValue) * (1 - rollPlus(armorSaveValue)) * weaponDamageValue;
-                      }
-                    return calculatedDamage;
+                       // 1 sustained hits
+                      if (sustainedHits) {
+                          calculatedDamage =
+                          (numberOfAttacksValue * (1 + oneSideProbability()))
+                          * rollPlus(hitRollValue) * rollPlus(sTRatioValue) * (1 - rollPlus(armorSaveValue)) * weaponDamageValue;
+                      } else
+                          // 1 devastating wounds
+                          if (devWounds) {
+                              calculatedDamage =
+                              ((numberOfAttacksValue * rollPlus(hitRollValue) * (rollPlus(sTRatioValue) - oneSideProbability()) * (1 - rollPlus(armorSaveValue)) * weaponDamageValue)
+                              +
+                              (numberOfAttacksValue * rollPlus(hitRollValue) * oneSideProbability() * weaponDamageValue));
+                          } else {
+                            calculatedDamage = numberOfAttacksValue * rollPlus(hitRollValue) * rollPlus(sTRatioValue) * (1 - rollPlus(armorSaveValue)) * weaponDamageValue;
+                          }
+                        return calculatedDamage;
   }
 
 
@@ -162,6 +202,11 @@ export default function HowMuchDamagePage() {
   const [sustainedHits, setSustainedHits] = useState(false);
   const [lethalHits, setLethalHits] = useState(false);
   const [devWounds, setDevWounds] = useState(false);
+  const [fNP, setFNP] = useState(false);
+  const [hitReroll, setHitReroll] = useState(false);
+  const [woundReroll, setWoundReroll] = useState(false);
+  const [saveReroll, setSaveReroll] = useState(false);
+  const [fateDice, setFateDice] = useState(false);
 
 
   const onFinish = (values) => {
@@ -178,8 +223,7 @@ export default function HowMuchDamagePage() {
     console.log('ST prob', rollPlus(sTRatioValue));
     console.log('armor save prob', rollPlus(armorSaveValue));
 
-    
-    let calculatedDamage = damageCalculatorEngine(lethalHits, sustainedHits, devWounds, numberOfAttacksValue, hitRollValue, sTRatioValue, armorSaveValue, weaponDamageValue); 
+    let calculatedDamage = damageCalculatorEngine(numberOfAttacksValue, hitRollValue, sTRatioValue, armorSaveValue, weaponDamageValue, lethalHits, sustainedHits, devWounds, fNP, hitReroll, woundReroll, saveReroll, fateDice); 
     setDamageDealt(calculatedDamage.toFixed(2));
 
   };
@@ -224,10 +268,15 @@ export default function HowMuchDamagePage() {
                 </Form.Item> */}
 
           
-            <Checkbox name="Sustained Hits" checked={sustainedHits} onChange={() => setSustainedHits(!sustainedHits)} style={{ width: '150%' }}   >Sustained Hits</Checkbox>
-            <Checkbox name="Lethal Hits" checked={lethalHits} onChange={() => setLethalHits(!lethalHits)} style={{ width: '150%' }}   >Lethal Hits</Checkbox>
-                <Checkbox name="Devastating Wounds" checked={devWounds} onChange={() => setDevWounds(!devWounds)} style={{ width: '150%'}}   >Devastating Wounds</Checkbox>
-                
+                <Checkbox name="Sustained Hits" checked={sustainedHits} onChange={() => setSustainedHits(!sustainedHits)} style={{ width: '150%' }}   >Sustained Hits</Checkbox>
+                <Checkbox name="Lethal Hits" checked={lethalHits} onChange={() => setLethalHits(!lethalHits)} style={{ width: '150%' }}   >Lethal Hits</Checkbox>
+                <Checkbox name="Devastating Wounds" checked={devWounds} onChange={() => setDevWounds(!devWounds)} style={{ width: '150%' }}   >Devastating Wounds</Checkbox>
+                <Checkbox defaultChecked={false} disabled     name="FNP" checked={fNP} onChange={() => setFNP(!fNP)} style={{ width: '150%' }}   >FNP</Checkbox>
+                <Checkbox defaultChecked={false} disabled     name="hitReroll" checked={hitReroll} onChange={() => setHitReroll(!hitReroll)} style={{ width: '150%' }}   >Hit reroll</Checkbox>
+                <Checkbox defaultChecked={false} disabled     name="woundReroll" checked={woundReroll} onChange={() => setWoundReroll(!woundReroll)} style={{ width: '150%' }}   >Wound reroll</Checkbox>
+                <Checkbox defaultChecked={false} disabled     name="saveReroll" checked={saveReroll} onChange={() => setSaveReroll(!saveReroll)} style={{ width: '150%' }}   >Save reroll</Checkbox>
+                <Checkbox defaultChecked={false} disabled     name="fateDice" checked={fateDice} onChange={() => setFateDice(!fateDice)} style={{ width: '150%' }}   >Use fate dice</Checkbox>
+
                 <Form.Item label='# attacks'> 
                 <AttacksWoundsIntegerStep  value={numberOfAttacksValue} onChange={(value) => setNumberOfAttacksValue(value)} />
                 </Form.Item>
