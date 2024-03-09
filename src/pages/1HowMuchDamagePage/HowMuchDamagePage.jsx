@@ -224,9 +224,9 @@ export default function HowMuchDamagePage() {
                 </Form.Item> */}
 
           
-                <Checkbox name="Sustained Hits" checked={sustainedHits} onChange={() => setSustainedHits(!sustainedHits)}   >Sustained Hits</Checkbox>
-                <Checkbox name="Lethal Hits" checked={lethalHits} onChange={() => setLethalHits(!lethalHits)}    >Lethal Hits</Checkbox>
-                <Checkbox name="Devastating Wounds" checked={devWounds} onChange={() => setDevWounds(!devWounds)}   >Devastating Wounds</Checkbox>
+            <Checkbox name="Sustained Hits" checked={sustainedHits} onChange={() => setSustainedHits(!sustainedHits)} style={{ width: '150%' }}   >Sustained Hits</Checkbox>
+            <Checkbox name="Lethal Hits" checked={lethalHits} onChange={() => setLethalHits(!lethalHits)} style={{ width: '150%' }}   >Lethal Hits</Checkbox>
+                <Checkbox name="Devastating Wounds" checked={devWounds} onChange={() => setDevWounds(!devWounds)} style={{ width: '150%'}}   >Devastating Wounds</Checkbox>
                 
                 <Form.Item label='# attacks'> 
                 <AttacksWoundsIntegerStep  value={numberOfAttacksValue} onChange={(value) => setNumberOfAttacksValue(value)} />
