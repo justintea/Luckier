@@ -132,7 +132,8 @@ function rollPlus(diceRollRequired) {
       if (diceRollRequired === 3) { return (4 / 6); } else
         if (diceRollRequired === 4) { return (3 / 6); } else
           if (diceRollRequired === 5) { return (2 / 6); } else
-            if (diceRollRequired === 6) { return (1/ 6); } 
+            if (diceRollRequired === 6) { return (1 / 6); } else 
+              if (diceRollRequired === 0) { return 0; }  
 }
 
 function oneSideProbability() {
@@ -162,8 +163,8 @@ function damageCalculatorEngine(numberOfAttacksValue, hitRollValue, sTRatioValue
           // remaining
           (numberOfAttacksValue * (rollPlus(hitRollValue) - oneSideProbability()) * (rollPlus(sTRatioValue) - oneSideProbability()) * (1 - rollPlus(armorSaveValue)) * weaponDamageValue)
           +
-          // and sustained hits 1
-          (numberOfAttacksValue * oneSideProbability() * rollPlus(sTRatioValue) * (1 - rollPlus(armorSaveValue)) * weaponDamageValue));
+          // and sustained hits 1 ) * ( FNP modifier)
+          (numberOfAttacksValue * oneSideProbability() * rollPlus(sTRatioValue) * (1 - rollPlus(armorSaveValue)) * weaponDamageValue))    * (1 - rollPlus(fNP)) ;
         
       } else
           // 2 lethal hits & devastating wounds
@@ -175,34 +176,34 @@ function damageCalculatorEngine(numberOfAttacksValue, hitRollValue, sTRatioValue
               // remaining, less devWound roll
               (numberOfAttacksValue * (rollPlus(hitRollValue)-oneSideProbability()) * (rollPlus(sTRatioValue) - oneSideProbability()) * (1 - rollPlus(armorSaveValue)) * weaponDamageValue)
               + 
-              // devWounds
-              (numberOfAttacksValue * rollPlus(hitRollValue) * oneSideProbability() * weaponDamageValue));
+              // devWounds * ( FNP modifier)
+              (numberOfAttacksValue * rollPlus(hitRollValue) * oneSideProbability() * weaponDamageValue))     * (1 - rollPlus(fNP));
           } else
-              // 2 sustained hits & devWounds
+              //! 2 sustained hits & devWounds
               if (sustainedHits & devWounds) {
               calculatedDamage = 70;
               } else
-                   // 1 lethal hits
+                   // 1 lethal hits * FNP modifier
                   if (lethalHits) {
                     calculatedDamage =
                       ((numberOfAttacksValue * (rollPlus(hitRollValue)-oneSideProbability()) * rollPlus(sTRatioValue) * (1 - rollPlus(armorSaveValue)) * weaponDamageValue)
                       +
-                      (numberOfAttacksValue * oneSideProbability() * (1 - rollPlus(armorSaveValue)) * weaponDamageValue));
+                      (numberOfAttacksValue * oneSideProbability() * (1 - rollPlus(armorSaveValue)) * weaponDamageValue))     * (1 - rollPlus(fNP));
                   } else
-                       // 1 sustained hits
+                       // 1 sustained hits * FNP modifier
                       if (sustainedHits) {
                           calculatedDamage =
                           (numberOfAttacksValue * (1 + oneSideProbability()))
-                          * rollPlus(hitRollValue) * rollPlus(sTRatioValue) * (1 - rollPlus(armorSaveValue)) * weaponDamageValue;
+                          * rollPlus(hitRollValue) * rollPlus(sTRatioValue) * (1 - rollPlus(armorSaveValue)) * weaponDamageValue      * (1 - rollPlus(fNP));
                       } else
-                          // 1 devastating wounds
+                          // 1 devastating wounds * FNP modifier 
                           if (devWounds) {
                               calculatedDamage =
                               ((numberOfAttacksValue * rollPlus(hitRollValue) * (rollPlus(sTRatioValue) - oneSideProbability()) * (1 - rollPlus(armorSaveValue)) * weaponDamageValue)
                               +
-                              (numberOfAttacksValue * rollPlus(hitRollValue) * oneSideProbability() * weaponDamageValue));
+                              (numberOfAttacksValue * rollPlus(hitRollValue) * oneSideProbability() * weaponDamageValue))     * (1 - rollPlus(fNP));
                           } else {
-                            calculatedDamage = numberOfAttacksValue * rollPlus(hitRollValue) * rollPlus(sTRatioValue) * (1 - rollPlus(armorSaveValue)) * weaponDamageValue;
+                            calculatedDamage = numberOfAttacksValue * rollPlus(hitRollValue) * rollPlus(sTRatioValue) * (1 - rollPlus(armorSaveValue)) * weaponDamageValue      * (1 - rollPlus(fNP));
                           }
                         return calculatedDamage;
   }
@@ -367,3 +368,63 @@ export default function HowMuchDamagePage() {
     
   </>);
 }
+
+
+
+//? save pt - 10/3/2024
+// if (lethalHits & sustainedHits & devWounds) {
+//   calculatedDamage = 9999;
+// } else
+//     // 2 lethal hits & sustained hits 
+//     if (lethalHits & sustainedHits) {
+//       calculatedDamage =
+//         // lethalhits
+//         ((numberOfAttacksValue * oneSideProbability() * (1 - rollPlus(armorSaveValue)) * weaponDamageValue)
+//           +
+//         // remaining
+//         (numberOfAttacksValue * (rollPlus(hitRollValue) - oneSideProbability()) * (rollPlus(sTRatioValue) - oneSideProbability()) * (1 - rollPlus(armorSaveValue)) * weaponDamageValue)
+//         +
+//         // and sustained hits 1
+//         (numberOfAttacksValue * oneSideProbability() * rollPlus(sTRatioValue) * (1 - rollPlus(armorSaveValue)) * weaponDamageValue));
+      
+//     } else
+//         // 2 lethal hits & devastating wounds
+//         if (lethalHits & devWounds) {
+//           calculatedDamage =
+//             // lethalhits
+//             ((numberOfAttacksValue * oneSideProbability() * (1 - rollPlus(armorSaveValue)) * weaponDamageValue)
+//             +
+//             // remaining, less devWound roll
+//             (numberOfAttacksValue * (rollPlus(hitRollValue)-oneSideProbability()) * (rollPlus(sTRatioValue) - oneSideProbability()) * (1 - rollPlus(armorSaveValue)) * weaponDamageValue)
+//             + 
+//             // devWounds
+//             (numberOfAttacksValue * rollPlus(hitRollValue) * oneSideProbability() * weaponDamageValue));
+//         } else
+//             // 2 sustained hits & devWounds
+//             if (sustainedHits & devWounds) {
+//             calculatedDamage = 70;
+//             } else
+//                  // 1 lethal hits
+//                 if (lethalHits) {
+//                   calculatedDamage =
+//                     ((numberOfAttacksValue * (rollPlus(hitRollValue)-oneSideProbability()) * rollPlus(sTRatioValue) * (1 - rollPlus(armorSaveValue)) * weaponDamageValue)
+//                     +
+//                     (numberOfAttacksValue * oneSideProbability() * (1 - rollPlus(armorSaveValue)) * weaponDamageValue));
+//                 } else
+//                      // 1 sustained hits
+//                     if (sustainedHits) {
+//                         calculatedDamage =
+//                         (numberOfAttacksValue * (1 + oneSideProbability()))
+//                         * rollPlus(hitRollValue) * rollPlus(sTRatioValue) * (1 - rollPlus(armorSaveValue)) * weaponDamageValue;
+//                     } else
+//                         // 1 devastating wounds
+//                         if (devWounds) {
+//                             calculatedDamage =
+//                             ((numberOfAttacksValue * rollPlus(hitRollValue) * (rollPlus(sTRatioValue) - oneSideProbability()) * (1 - rollPlus(armorSaveValue)) * weaponDamageValue)
+//                             +
+//                             (numberOfAttacksValue * rollPlus(hitRollValue) * oneSideProbability() * weaponDamageValue));
+//                         } else {
+//                           calculatedDamage = numberOfAttacksValue * rollPlus(hitRollValue) * rollPlus(sTRatioValue) * (1 - rollPlus(armorSaveValue)) * weaponDamageValue;
+//                         }
+//                       return calculatedDamage;
+// }
