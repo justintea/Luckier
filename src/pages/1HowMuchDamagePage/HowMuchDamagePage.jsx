@@ -111,7 +111,7 @@ const onSearch = (value) => {
 };
 
 // Update the onChange handler for the FNP Select
-const onFNPChange = (value) => {
+const onFNPChange = (value, { fNP, setFNP }) => {
   console.log(`Selected FNP: ${value}`);
   setFNP(value);
 };
@@ -138,11 +138,9 @@ function rollPlus(diceRollRequired) {
 function oneSideProbability() {
   return (1 / 6); 
 }
-// const onChange = (e) => {
-//   console.log(`checked = ${e.target.checked}`);
-// };
 
-function damageCalculatorEngine(numberOfAttacksValue, hitRollValue, sTRatioValue, armorSaveValue, weaponDamageValue, lethalHits, sustainedHits, devWounds, hitReroll, woundReroll, saveReroll, fateDice) {
+
+function damageCalculatorEngine(numberOfAttacksValue, hitRollValue, sTRatioValue, armorSaveValue, weaponDamageValue, lethalHits, sustainedHits, devWounds, fNP, hitReroll, woundReroll, saveReroll, fateDice) {
 // function damageCalculatorEngine(numberOfAttacksValue, hitRollValue, sTRatioValue, armorSaveValue, weaponDamageValue, lethalHits, sustainedHits, devWounds, fNP, hitReroll, woundReroll, saveReroll, fateDice) {
   let calculatedDamage = 0.00; // Update this part with the correct formula for Lethal Hits
 
@@ -324,28 +322,14 @@ export default function HowMuchDamagePage() {
                 <Form.Item label='Damage'> 
                     <DamageIntegerStep value={weaponDamageValue} onChange={(value) => setWeaponDamageValue(value)} />
                 </Form.Item>
-            
-
-                {/* //? FNP select dropdown */}
-{/* 
-const onFNPChange = (value) => {
-  console.log(`Selected FNP: ${value}`);
-  setFNP(value);
-}; */}
-
 
                 <Form.Item label='FNP'> 
                 <Select
                 showSearch
                 placeholder=""
                 optionFilterProp="children"
-                // onChange={() => setFNP(fNP)}
-                onChange={onFNPChange} // Use the new onChange handler
-
-                // onFNPChange={(value) => setFNP(value)}
-
+                onChange={(value) => setFNP(value)}
                 onSearch={onSearch}
-
                 filterOption={filterOption}
                 options={[
                   {
